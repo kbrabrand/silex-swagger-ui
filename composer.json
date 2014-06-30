@@ -1,0 +1,22 @@
+{
+    "name": "kribrabr/silex-swagger-ui",
+    "description": "A silex service provider that integrates the Swagger UI documentation browser into silex",
+    "keywords": ["silex", "swagger", "swagger-ui", "service", "provider"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kristoffer Brabrand",
+            "email": "kristoffer@brabrand.no"
+        }
+    ],
+    "require": {
+        "silex/silex": "~1.0",
+        "twig/twig": ">=1.8,<2.0-dev",
+        "twig": "1.8.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "SwaggerUI":"src/"
+        }
+    }
+}
