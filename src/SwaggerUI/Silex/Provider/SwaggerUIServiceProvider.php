@@ -2,7 +2,11 @@
 
 namespace SwaggerUI\Silex\Provider;
 
-use Twig_Autoloader;
+use Twig_Autoloader,
+    Twig_Loader_Filesystem,
+    Twig_Environment;
+
+
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,30 +35,63 @@ class SwaggerUIServiceProvider implements ServiceProviderInterface
             };
         }
 
-        $twig = $app['twig'];
+        $app->get($app['swaggerui.path'], function() use ($app) {
+            echo str_replace(['{{swaggerui-root}}', '{{swagger-docs}}'], [$app['swaggerui.path'], $app['swaggerui.apiDovPath']], file_get_contents(__DIR__ . '/../../../../public/index.html'));die;
+        });
 
-        if (!$twig) {
-            $twig = $this->getTwig($app);
-        }
+        $app->get($app['swaggerui.path'] . '/{resource}', function($resource) use ($app) {
+            $file = __DIR__ . '/../../../../public/' . $resource;
+            if (is_file($file)) {
+                return file_get_contents($file);
+            }
 
-        $app->get($app["swaggerui.path"], function() {
-            $twig->loadTemplate('index.html')->render(array('the' => 'variables', 'go' => 'here'));
+            return '';
+        });
+
+        $app->get($app['swaggerui.path'] . '/lib/{resource}', function($resource) use ($app) {
+            return $this->getFile(
+                __DIR__ . '/../../../../public/lib/' . $resource,
+                'text/javascript'
+            );
+        });
+
+        $app->get($app['swaggerui.path'] . '/css/{resource}', function($resource) use ($app) {
+            return $this->getFile(
+                __DIR__ . '/../../../../public/css/' . $resource,
+                'text/css'
+            );
+        });
+
+        $app->get($app['swaggerui.path'] . '/images/{resource}', function($resource) use ($app) {
+            return $this->getFile(
+                __DIR__ . '/../../../../public/images/' . $resource,
+                'image/png'
+            );
         });
     }
 
     /**
-     * Get twig instance
+     * Registers the swagger UI service
+     *
+     * @param Application $app
      */
-    protected function getTwig(Application $app) {
-        Twig_Autoloader::register();
+    public function register(Application $app) {}
 
-        $loader = new Twig_Loader_Filesystem('../../../../views');
-        $twig = new Twig_Environment($loader, array(
-            'cache' => '../../../../cache',
-        ));
+    /**
+     * Get a public file
+     *
+     * @param string Path to file
+     * @param string Content-type
+     * @return Response
+     */
+    public function getFile($path, $contentType) {
+        if (is_file($path)) {
+            $response = new Response(file_get_contents($path));
+            $response->headers->set('Content-Type', $contentType);
+            $response->setCharset('UTF-8');
+            return $response;
+        }
 
-        $twig = new Twig_Environment($loader);
-
-        return $twig;
+        return new Response('', 404);
     }
 }
