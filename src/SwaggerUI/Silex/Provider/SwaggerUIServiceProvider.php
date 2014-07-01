@@ -2,14 +2,8 @@
 
 namespace SwaggerUI\Silex\Provider;
 
-use Twig_Autoloader,
-    Twig_Loader_Filesystem,
-    Twig_Environment;
-
-
 use Silex\Application;
 use Silex\ServiceProviderInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
