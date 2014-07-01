@@ -1,5 +1,5 @@
 {
-    "name": "kribrabr/silex-swagger-ui",
+    "name": "kbrabrand/silex-swagger-ui",
     "description": "A silex service provider that integrates the Swagger UI documentation browser into silex",
     "keywords": ["silex", "swagger", "swagger-ui", "service", "provider"],
     "license": "MIT",
