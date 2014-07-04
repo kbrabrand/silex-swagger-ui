@@ -30,7 +30,7 @@ class SwaggerUIServiceProvider implements ServiceProviderInterface
         }
 
         $app->get($app['swaggerui.path'], function() use ($app) {
-            echo str_replace(['{{swaggerui-root}}', '{{swagger-docs}}'], [$app['swaggerui.path'], $app['swaggerui.apiDovPath']], file_get_contents(__DIR__ . '/../../../../public/index.html'));die;
+            echo str_replace(['{{swaggerui-root}}', '{{swagger-docs}}'], [$app['swaggerui.path'], $app['swaggerui.apiDocPath']], file_get_contents(__DIR__ . '/../../../../public/index.html'));die;
         });
 
         $app->get($app['swaggerui.path'] . '/{resource}', function($resource) use ($app) {

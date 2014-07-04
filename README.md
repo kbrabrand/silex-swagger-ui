@@ -10,7 +10,7 @@ In addition to this you will need to register the service in your Silex app like
 // Set up swagger ui service for viewing the swagger docs
 $app->register(new SwaggerUI\Silex\Provider\SwaggerUIServiceProvider(), array(
     'swaggerui.path'       => '/v1/swagger',
-    'swaggerui.apiDovPath' => '/v1/docs'
+    'swaggerui.apiDocPath' => '/v1/docs'
 ));
 ```
 
