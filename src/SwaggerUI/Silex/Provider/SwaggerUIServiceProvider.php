@@ -20,15 +20,6 @@ class SwaggerUIServiceProvider implements ServiceProviderInterface
      */
     public function boot(Application $app)
     {
-        if ($app["logger"]) {
-            $logger = Logger::getInstance();
-            $originalLog = $logger->log;
-            $logger->log = function ($entry, $type) use ($app, $originalLog) {
-                $app["logger"]->notice($entry);
-                $originalLog($entry, $type);
-            };
-        }
-
         $app->get($app['swaggerui.path'], function() use ($app) {
             return str_replace(['{{swaggerui-root}}', '{{swagger-docs}}'], [$app['swaggerui.path'], $app['swaggerui.apiDocPath']], file_get_contents(__DIR__ . '/../../../../public/index.html'));
         });
