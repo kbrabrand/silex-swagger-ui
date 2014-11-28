@@ -4,6 +4,7 @@ namespace SwaggerUI\Silex\Provider;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -20,8 +21,12 @@ class SwaggerUIServiceProvider implements ServiceProviderInterface
      */
     public function boot(Application $app)
     {
-        $app->get($app['swaggerui.path'], function() use ($app) {
-            return str_replace(['{{swaggerui-root}}', '{{swagger-docs}}'], [$app['swaggerui.path'], $app['swaggerui.apiDocPath']], file_get_contents(__DIR__ . '/../../../../public/index.html'));
+        $app->get($app['swaggerui.path'], function(Request $request) use ($app) {
+            return str_replace(
+                ['{{swaggerui-root}}', '{{swagger-docs}}'],
+                [$request->getBasePath() . $app['swaggerui.path'], $app['swaggerui.apiDocPath']],
+                file_get_contents(__DIR__ . '/../../../../public/index.html')
+            );
         });
 
         $app->get($app['swaggerui.path'] . '/{resource}', function($resource) use ($app) {
