@@ -4,7 +4,6 @@ namespace SwaggerUI\Silex\Provider;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -21,39 +20,38 @@ class SwaggerUIServiceProvider implements ServiceProviderInterface
      */
     public function boot(Application $app)
     {
-        $app->get($app['swaggerui.path'], function(Request $request) use ($app) {
-            return str_replace(
-                ['{{swaggerui-root}}', '{{swagger-docs}}'],
-                [$request->getBasePath() . $app['swaggerui.path'], $request->getBasePath() . $app['swaggerui.apiDocPath']],
-                file_get_contents(__DIR__ . '/../../../../public/index.html')
+        $self = &$this;
+
+        $app->get($app['swaggerui.path'], function() use ($app) {
+
+
+            return str_replace(array('{{swaggerui-root}}', '{{swagger-docs}}'), array($app['request']->getBaseUrl().$app['swaggerui.path'],$app['request']->getBaseUrl(). $app['swaggerui.apiDocPath']), file_get_contents(__DIR__ . '/../../../../public/index.html'));
+        });
+
+        $app->get($app['swaggerui.path'] . '/{resource}', function($resource) use ($app,$self) {
+            return $self->getFile(
+                __DIR__ . '/../../../../public/' . $resource,
+                'text/css'
             );
         });
 
-        $app->get($app['swaggerui.path'] . '/{resource}', function($resource) use ($app) {
-            $file = __DIR__ . '/../../../../public/' . $resource;
-            if (is_file($file)) {
-                return file_get_contents($file);
-            }
-
-            return '';
-        });
-
-        $app->get($app['swaggerui.path'] . '/lib/{resource}', function($resource) use ($app) {
-            return $this->getFile(
+        $app->get($app['swaggerui.path'] . '/lib/{resource}', function($resource) use ($app,$self) {
+            return $self->getFile(
                 __DIR__ . '/../../../../public/lib/' . $resource,
                 'text/javascript'
             );
         });
 
-        $app->get($app['swaggerui.path'] . '/css/{resource}', function($resource) use ($app) {
-            return $this->getFile(
+        $app->get($app['swaggerui.path'] . '/css/{resource}', function($resource) use ($app,$self) {
+            return $self->getFile(
                 __DIR__ . '/../../../../public/css/' . $resource,
                 'text/css'
             );
         });
 
-        $app->get($app['swaggerui.path'] . '/images/{resource}', function($resource) use ($app) {
-            return $this->getFile(
+     
+        $app->get($app['swaggerui.path'] . '/images/{resource}', function($resource) use ($app,$self) {
+            return $self->getFile(
                 __DIR__ . '/../../../../public/images/' . $resource,
                 'image/png'
             );
