@@ -24,7 +24,7 @@ class SwaggerUIServiceProvider implements ServiceProviderInterface
         $app->get($app['swaggerui.path'], function(Request $request) use ($app) {
             return str_replace(
                 ['{{swaggerui-root}}', '{{swagger-docs}}'],
-                [$request->getBasePath() . $app['swaggerui.path'], $app['swaggerui.apiDocPath']],
+                [$request->getBasePath() . $app['swaggerui.path'], $request->getBasePath() . $app['swaggerui.apiDocPath']],
                 file_get_contents(__DIR__ . '/../../../../public/index.html')
             );
         });
