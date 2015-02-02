@@ -21,10 +21,12 @@ class SwaggerUIServiceProvider implements ServiceProviderInterface
      */
     public function boot(Application $app)
     {
+        // Reference to $this, it's used for closure in anonymous function (PHP 5.3.x)
+        $self = &$this;
         $app->get($app['swaggerui.path'], function(Request $request) use ($app) {
             return str_replace(
-                ['{{swaggerui-root}}', '{{swagger-docs}}'],
-                [$request->getBasePath() . $app['swaggerui.path'], $request->getBasePath() . $app['swaggerui.apiDocPath']],
+                array('{{swaggerui-root}}', '{{swagger-docs}}'),
+                array($request->getBasePath() . $app['swaggerui.path'], $request->getBasePath() . $app['swaggerui.apiDocPath']),
                 file_get_contents(__DIR__ . '/../../../../public/index.html')
             );
         });
@@ -38,22 +40,22 @@ class SwaggerUIServiceProvider implements ServiceProviderInterface
             return '';
         });
 
-        $app->get($app['swaggerui.path'] . '/lib/{resource}', function($resource) use ($app) {
-            return $this->getFile(
+        $app->get($app['swaggerui.path'] . '/lib/{resource}', function($resource) use ($app, $self) {
+            return $self->getFile(
                 __DIR__ . '/../../../../public/lib/' . $resource,
                 'text/javascript'
             );
         });
 
-        $app->get($app['swaggerui.path'] . '/css/{resource}', function($resource) use ($app) {
-            return $this->getFile(
+        $app->get($app['swaggerui.path'] . '/css/{resource}', function($resource) use ($app, $self) {
+            return $self->getFile(
                 __DIR__ . '/../../../../public/css/' . $resource,
                 'text/css'
             );
         });
 
-        $app->get($app['swaggerui.path'] . '/images/{resource}', function($resource) use ($app) {
-            return $this->getFile(
+        $app->get($app['swaggerui.path'] . '/images/{resource}', function($resource) use ($app, $self) {
+            return $self->getFile(
                 __DIR__ . '/../../../../public/images/' . $resource,
                 'image/png'
             );
