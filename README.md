@@ -11,11 +11,13 @@ In addition to this you will need to register the service in your Silex app like
 $app->register(new SwaggerUI\Silex\Provider\SwaggerUIServiceProvider(), array(
     'swaggerui.path'       => '/v1/swagger',
     'swaggerui.apiDocPath' => '/v1/docs'
+    'swaggerui.assetsPath' => '/my-path-to-assets'
 ));
 ```
 
 This will result in the SwaggerUI interface being available at */v1/swagger* under you Silex application root. The `swaggerui.apiDovPath` config option specifies the URL/path to the swagger doc files.
-
+You must want choose a specific path for static assets, if you want this, you will need copy the public folder from this project to destination that you want.
+ 
 ## Known issues
 The Swagger UI is pretty slow right now due to the fact that static resources are served _through_ a Silex controller and no cache is in place (yet). I'll try to fix this soon.
 
